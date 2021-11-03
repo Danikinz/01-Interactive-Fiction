@@ -1,4 +1,4 @@
-{
+world = {
   "uuid": "6AE3A0BB-66E6-4EFB-BEFD-B82C7C286326",
   "name": "Bartender json",
   "creator": "Twine",
@@ -6,9 +6,10 @@
   "schemaName": "Harlowe 3 to JSON",
   "schemaVersion": "0.0.6",
   "createdAtMs": 1635476789374,
+
   "passages": [
     {
-      "name": "Welcome",
+      "name": "~Bartender~",
       "tags": "",
       "id": "1",
       "text": "Tonight actually seems like it could be okay. Normally on a rainy Chicago night like this I'd do nothing but sleep and play with Brinks. He's not the most well-behaved cat, but he keeps me getting up everyday. I guess I should get up soon... \n\n[[Get out of bed->Home]]",
@@ -170,8 +171,8 @@
       "links": [
         {
           "linkText": "Play again?",
-          "passageName": "Welcome",
-          "original": "[[Play again?->Welcome]]"
+          "passageName": "~Bartender~",
+          "original": "[[Play again?->~Bartender~]]"
         },
         {
           "linkText": "Quit",
@@ -229,8 +230,8 @@
       "links": [
         {
           "linkText": "Play again",
-          "passageName": "Welcome",
-          "original": "[[Play again->Welcome]]"
+          "passageName": "~Bartender~",
+          "original": "[[Play again->~Bartender~]]"
         },
         {
           "linkText": "Quit",
@@ -294,8 +295,8 @@
       "links": [
         {
           "linkText": "Play again",
-          "passageName": "Welcome",
-          "original": "[[Play again->Welcome]]"
+          "passageName": "~Bartender~",
+          "original": "[[Play again->~Bartender~]]"
         },
         {
           "linkText": "Quit",
@@ -308,3 +309,63 @@
     }
   ]
 }
+
+def find_current_location(location_label):
+  if "passages" in world: 
+    for passage in world["passages"]:
+      if location_label == passage["name"]:
+        return passage 
+  return {}
+
+    
+def update(current_location, location_label, response):
+      if response =="":
+        return location_label 
+      if "links" in current_location:
+        for link in current_location["links"]:
+          if link["linkText"] == response:
+            return link["passageName"]
+      print ("Check your spelling, also, the game is case sensitive!")
+      return location_label
+
+ 
+
+def render(current_location, score, moves):
+      if "name" in current_location and "cleanText" in current_location:
+        print("Moves: " + str(moves) + ", Score: " + str(score))
+      print(current_location["name"] + "\n")
+      print(current_location["cleanText"] + "\n")
+      for link in current_location["links"]:
+        print(link["linkText"] + "\n")
+
+    #Get Input
+#response = input("")
+    # for link in current_location["links"]:
+     #   if response == link["linkText"]:
+      #   current = link["passageName"]
+
+def get_input():
+    response = input("Action: ")
+   # response = response.upper().strip()
+    return response
+
+
+
+location_label = "~Bartender~"
+current_location = {}
+response = ""
+score = 0
+moves = 0 
+
+while True: 
+  if response == "Quit":
+    break 
+  moves = moves + 1 
+  if "score" in current_location:
+    score = score + current_location["score"]
+  location_label = update(current_location, location_label, response)
+  current_location = find_current_location(location_label)
+  render(current_location, score, moves)
+  response = get_input()
+
+
